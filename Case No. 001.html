@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Case No. 001</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+<style>
+:root{--wood:#3b2216;--wood2:#25140d;--brass:#d4a64a;--paper:#f6edd8;--ink:#2a2118;--red:#b3261e;
+  --type:"Special Elite","Courier New",monospace;--head:"Playfair Display",Georgia,serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100%;min-height:100dvh;font-family:var(--type);color:var(--ink);-webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  background:repeating-linear-gradient(90deg,var(--wood) 0 38px,var(--wood2) 38px 40px),var(--wood);
+  display:flex;align-items:center;justify-content:center;padding:18px}
+.doc{position:relative;width:min(520px,100%);background:var(--paper);border-radius:3px;padding:26px 22px 24px;box-shadow:0 0 0 6px var(--brass),0 30px 70px rgba(0,0,0,.6);overflow:hidden}
+.doc::before{content:"";position:absolute;inset:8px;border:1.5px double #8a7a5a;pointer-events:none;border-radius:2px}
+.court{font-family:var(--head);font-style:italic;font-weight:700;font-size:1.05rem;text-align:center;color:#6b4a1c;margin:0}
+h1{font-family:var(--head);font-style:italic;font-size:clamp(1.55rem,6.5vw,2.1rem);line-height:1.15;text-align:center;margin:8px 0 14px}
+p{line-height:1.5;margin:0 0 12px;font-size:1.05rem}
+.small{font-size:.9rem;opacity:.7;text-align:center}
+.tag{font-size:.9rem;color:#6b4a1c;margin-bottom:6px;text-align:center}
+.charge{font-size:1.2rem;text-align:center;margin:10px 0 6px}
+.plea{position:relative;min-height:92px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.stamp{display:inline-block;border:4px solid var(--red);color:var(--red);font-size:1.7rem;padding:2px 14px;letter-spacing:2px;transform:rotate(-9deg);opacity:0;border-radius:4px}
+.stamp.slam{animation:slam .35s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes slam{0%{opacity:0;transform:rotate(-9deg) scale(3.2)}100%{opacity:.92;transform:rotate(-9deg) scale(1)}}
+.shake{animation:shk .35s}
+@keyframes shk{25%{transform:translate(-5px,3px)}50%{transform:translate(5px,-3px)}75%{transform:translate(-3px,2px)}}
+.note{text-align:center;opacity:0;transition:opacity .5s;min-height:3em}
+.note.on{opacity:1}
+.btn{display:block;margin:14px auto 0;font-family:var(--type);font-size:1.15rem;color:var(--paper);background:var(--wood);border:2px solid var(--brass);border-radius:6px;padding:12px 24px;cursor:pointer;transition:transform .15s,opacity .3s}
+.btn:active{transform:scale(.96)}.btn:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.btn[hidden]{display:none}.btn.big{font-size:1.5rem;padding:16px 30px}
+.btn.red{background:var(--red)}
+.gavel{font-size:4.5rem;display:block;margin:6px auto;background:none;border:0;cursor:pointer;transform-origin:80% 80%;animation:bob 1.6s infinite}
+@keyframes bob{50%{transform:rotate(-18deg)}}
+.opt{display:flex;gap:12px;align-items:center;border:2px dashed #8a7a5a;border-radius:6px;padding:11px 12px;margin:8px 0;cursor:pointer;font-size:1.05rem;user-select:none}
+.opt input{width:22px;height:22px;accent-color:var(--red);flex:none}
+.opt.on{background:#ecdcb5;border-style:solid}
+.say{white-space:pre-wrap;min-height:11em;font-size:1.1rem}
+.row{display:flex;gap:14px;justify-content:center;align-items:center;min-height:62px;flex-wrap:wrap}
+.row .btn{margin:0}
+#appeal{background:#6b5a50;transition:transform .12s}
+.heart{position:fixed;bottom:-30px;pointer-events:none;animation:rise linear forwards;z-index:9}
+@keyframes rise{to{transform:translateY(-110vh) rotate(25deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.gavel,.shake,.heart{animation:none}.stamp.slam{animation:none;opacity:.92}}
+</style>
+</head>
+<body>
+<main class="doc" id="doc" aria-live="polite"></main>
+
+<script>
+/* ===== EDIT THESE ===== */
+const HER = "Hiam";            // her name
+const HIM = "Yassine";
+const CHARGES = [                 // [charge, defendant's comment]
+  ["Making you overthink.", "Guilty. Your brain works overtime and I gave it extra shifts."],
+  ["Making you think I don’t care.", "Wrong. I care more than you know. Guilty of making you doubt it."],
+  ["Making you cry.", "Guilty. And I hate that I did."],
+  ["Hurting you.", "No joke here. Guilty, and I’m truly sorry."]
+];
+const STATEMENT = "Your Honor, I’m not here to defend myself.\n\nI’m sorry. I hurt you, and you didn’t deserve it. I miss how we were, and I want to earn it back.\n\nI love you so much, and I’m sorry about what happened between us. It shouldn’t have happened. You know how much I love you. I only have you in this life, and I want you for eternity.\n\nI care about you so much, and you have no idea how much you mean to me. When something is off between us, I get so messed up.\n\nI love you forever.\nKisses to the best wife ever. ❤";
+const SENTENCES = ["Infinity kisses (no refunds)","Saying sorry 10,000 times","One very, very long hug","Kneeling in front of you like a loyal servant","Being your personal chef for a week","Watching whatever you want, zero complaints"];
+const FINAL = "Court is adjourned.\nThank you for giving me another chance. I promise to be the guy you deserve.";
+/* ======================= */
+
+const doc=document.getElementById("doc");
+let step=0;
+const html=(h)=>{doc.innerHTML=h;};
+const $=s=>doc.querySelector(s);
+const head=`<p class="court">THE COURT OF MY HEART</p>`;
+
+function intro(){
+  html(`${head}<h1>Case No. 001:<br>${HER} v. ${HIM}</h1>
+  <p>You have been summoned as the <b>presiding judge</b>. The defendant is already nervous.</p>
+  <button class="gavel" id="g" aria-label="Take the bench">🔨</button>
+  <p class="small">Tap the gavel to begin the hearing.</p>`);
+  $("#g").onclick=()=>{doc.classList.add("shake");setTimeout(()=>{doc.classList.remove("shake");charge(0)},400);};
+}
+function charge(i){
+  const [c,n]=CHARGES[i];
+  html(`${head}<p class="tag">Charge ${i+1} of ${CHARGES.length}</p>
+  <p class="charge">“${c}”</p>
+  <div class="plea"><span class="stamp" id="st">GUILTY</span></div>
+  <p class="note" id="nt">${n}</p>
+  <button class="btn" id="nx" hidden>${i<CHARGES.length-1?"Next charge":"The defendant may speak"}</button>`);
+  setTimeout(()=>{$("#st").classList.add("slam");doc.classList.add("shake");
+    setTimeout(()=>{doc.classList.remove("shake");$("#nt").classList.add("on");$("#nx").hidden=false;},450);},900);
+  $("#nx").onclick=()=>i<CHARGES.length-1?charge(i+1):statement();
+}
+function statement(){
+  html(`${head}<p class="tag">The defendant’s statement</p><div class="say" id="sy"></div>
+  <button class="btn" id="nx" hidden>Pass sentence</button>`);
+  const el=$("#sy");let k=0;el.onclick=()=>{k=STATEMENT.length-1;};
+  const t=setInterval(()=>{el.textContent=STATEMENT.slice(0,++k);if(k>=STATEMENT.length){clearInterval(t);$("#nx").hidden=false;}},24);
+  $("#nx").onclick=()=>{clearInterval(t);sentence();};
+}
+function sentence(){
+  html(`${head}<h1>Sentencing</h1><p class="small">Pick the punishments, Your Honor. Pick as many as you like.</p>
+  ${SENTENCES.map((s,i)=>`<label class="opt"><input type="checkbox" data-i="${i}"><span>${s}</span></label>`).join("")}
+  <button class="btn" id="nx" disabled>Pass sentence</button>`);
+  const boxes=[...doc.querySelectorAll("input")];
+  boxes.forEach(b=>b.onchange=()=>{b.parentElement.classList.toggle("on",b.checked);$("#nx").disabled=!boxes.some(x=>x.checked);});
+  $("#nx").style.opacity=1;
+  $("#nx").onclick=()=>verdict(boxes.filter(b=>b.checked).map(b=>SENTENCES[b.dataset.i]));
+}
+function verdict(list){
+  html(`${head}<h1>The verdict</h1>
+  <p>The defendant is sentenced to:</p>
+  <p>${list.map(s=>"• "+s).join("<br>")}</p>
+  <p>…and humbly requests one more thing: <b>your forgiveness.</b></p>
+  <div class="row"><button class="btn big red" id="ok">Forgive him</button><button class="btn" id="appeal">Appeal</button></div>`);
+  const ap=$("#appeal");
+  const dodge=e=>{e.preventDefault();const w=$(".row").getBoundingClientRect().width;
+    ap.style.transform=`translate(${(Math.random()-.5)*Math.max(100,w-140)}px,${(Math.random()-.5)*70}px)`;};
+  ap.addEventListener("pointerenter",dodge);ap.addEventListener("touchstart",dodge,{passive:false});ap.addEventListener("click",dodge);
+  $("#ok").onclick=end;
+}
+function end(){
+  html(`${head}<h1>Case closed ❤</h1>
+  <div class="plea"><span class="stamp" id="st">FORGIVEN</span></div>
+  <p class="say" style="min-height:0;text-align:center">${FINAL.replace(/\n/g,"<br>")}</p>
+  <p class="small">Signed, ${HIM}</p>`);
+  setTimeout(()=>$("#st").classList.add("slam"),200);
+  for(let i=0;i<90;i++)setTimeout(()=>{const h=document.createElement("div");h.className="heart";
+    h.textContent=["❤","💗","💖","✨"][Math.floor(Math.random()*4)];h.style.left=Math.random()*100+"vw";
+    h.style.fontSize=(16+Math.random()*28)+"px";h.style.animationDuration=(3+Math.random()*3)+"s";
+    document.body.appendChild(h);setTimeout(()=>h.remove(),6500);},i*70);
+}
+intro();
+</script>
+</body>
+</html>
